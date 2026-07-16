@@ -1,10 +1,12 @@
 // Home / Recomendación del día.
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { MarketVerdict, PricePoint } from '../types.ts'
-import { getMarketDate, getPriceHistory, setMarketDate } from '../data/provider.ts'
+import { getPriceHistory } from '../data/provider.ts'
+import { useAppDate } from '../lib/dateStore.ts'
 import { getDailyVerdict } from '../lib/recommendations.ts'
 import { formatDateEs } from '../lib/format.ts'
-import { Header, LegalNotice, Section } from '../components/Layout.tsx'
+import { Section } from '../components/Layout.tsx'
 import { CompactRecommendation, HeroRecommendation } from '../components/RecommendationCard.tsx'
 import { Card, Stat } from '../components/ui.tsx'
 
@@ -35,7 +37,8 @@ function NoBuyMessage() {
 }
 
 export function Home() {
-  const [date, setDate] = useState(getMarketDate())
+  const date = useAppDate()
+  const navigate = useNavigate()
   const [verdict, setVerdict] = useState<MarketVerdict | null>(null)
   const [primaryHistory, setPrimaryHistory] = useState<PricePoint[] | undefined>(undefined)
   const [loading, setLoading] = useState(true)
@@ -43,7 +46,6 @@ export function Home() {
   useEffect(() => {
     let active = true
     setLoading(true)
-    setMarketDate(date)
     getDailyVerdict(date).then(async (v) => {
       const history = v.primary ? await getPriceHistory(v.primary.ticker, '1y') : undefined
       if (!active) return
@@ -57,56 +59,55 @@ export function Home() {
   }, [date])
 
   return (
-    <div className="min-h-screen bg-[var(--color-canvas)]">
-      <Header date={date} onDateChange={setDate} />
-      <main className="mx-auto max-w-3xl px-5 pb-16">
-        <div className="pt-6">
-          <h1 className="text-[28px] font-semibold">Recomendación del día</h1>
-          <p className="mt-1 text-[15px] text-[var(--color-ink-soft)] first-letter:uppercase">{formatDateEs(date)}</p>
-        </div>
+    <>
+      <div className="pt-6">
+        <h1 className="text-[28px] font-semibold">Recomendación del día</h1>
+        <p className="mt-1 text-[15px] text-[var(--color-ink-soft)] first-letter:uppercase">{formatDateEs(date)}</p>
+      </div>
 
-        {loading || !verdict ? (
-          <div className="mt-8 animate-pulse text-[var(--color-ink-soft)]">Analizando el S&amp;P 500…</div>
-        ) : (
-          <>
-            <div className="mt-5">
-              <MarketVerdictBar verdict={verdict} />
-            </div>
+      {loading || !verdict ? (
+        <div className="mt-8 animate-pulse text-[var(--color-ink-soft)]">Analizando el S&amp;P 500…</div>
+      ) : (
+        <>
+          <div className="mt-5">
+            <MarketVerdictBar verdict={verdict} />
+          </div>
 
-            <div className="mt-6">
-              {verdict.primary ? (
-                <HeroRecommendation rec={verdict.primary} history={primaryHistory} onRegister={() => alert('Registro de operaciones disponible en la Fase 2.')} />
-              ) : (
-                <NoBuyMessage />
-              )}
-            </div>
-
-            {verdict.alternatives.length > 0 && (
-              <Section title="Alternativas" subtitle="Otras ideas que también pasan calidad y margen de seguridad.">
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {verdict.alternatives.map((r) => (
-                    <CompactRecommendation key={r.ticker} rec={r} />
-                  ))}
-                </div>
-              </Section>
+          <div className="mt-6">
+            {verdict.primary ? (
+              <HeroRecommendation
+                rec={verdict.primary}
+                history={primaryHistory}
+                onRegister={() => navigate(`/registrar?ticker=${verdict.primary?.ticker}`)}
+              />
+            ) : (
+              <NoBuyMessage />
             )}
+          </div>
 
-            <Section title="Watchlist" subtitle="Negocios excelentes que aún no están baratos: la lista de la compra.">
-              {verdict.watchlist.length > 0 ? (
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {verdict.watchlist.slice(0, 6).map((r) => (
-                    <CompactRecommendation key={r.ticker} rec={r} showMos={false} />
-                  ))}
-                </div>
-              ) : (
-                <p className="text-[14px] text-[var(--color-ink-soft)]">Sin valores en watchlist hoy.</p>
-              )}
+          {verdict.alternatives.length > 0 && (
+            <Section title="Alternativas" subtitle="Otras ideas que también pasan calidad y margen de seguridad.">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {verdict.alternatives.map((r) => (
+                  <CompactRecommendation key={r.ticker} rec={r} />
+                ))}
+              </div>
             </Section>
-          </>
-        )}
+          )}
 
-        <LegalNotice />
-      </main>
-    </div>
+          <Section title="Watchlist" subtitle="Negocios excelentes que aún no están baratos: la lista de la compra.">
+            {verdict.watchlist.length > 0 ? (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {verdict.watchlist.slice(0, 6).map((r) => (
+                  <CompactRecommendation key={r.ticker} rec={r} showMos={false} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-[14px] text-[var(--color-ink-soft)]">Sin valores en watchlist hoy.</p>
+            )}
+          </Section>
+        </>
+      )}
+    </>
   )
 }

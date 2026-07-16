@@ -105,9 +105,7 @@ export function scoreStock(input: StockInput, date: string): Recommendation {
   }
 }
 
-export function buildVerdict(inputs: StockInput[], date: string): MarketVerdict {
-  const recs = inputs.map((i) => scoreStock(i, date))
-
+export function buildVerdict(recs: Recommendation[], date: string): MarketVerdict {
   const passQuality = recs.filter((r) => r.quality.passesHardFilter).length
   const eligibleRecs = recs
     .filter((r) => r.eligible)

@@ -28,7 +28,7 @@ export function Header({ date, onDateChange }: { date: string; onDateChange: (d:
 
 export function LegalNotice() {
   return (
-    <p className="mx-auto mt-10 max-w-3xl px-5 text-[12px] leading-relaxed text-[var(--color-ink-soft)]">
+    <p className="mt-10 text-[12px] leading-relaxed text-[var(--color-ink-soft)]">
       <strong className="font-semibold text-[var(--color-ink)]">Aviso legal.</strong> Es una herramienta de análisis y
       registro personal; no constituye asesoramiento financiero. Las decisiones de inversión y sus riesgos son
       responsabilidad exclusiva del usuario. Datos simulados con fines de demostración (Fase 1).
