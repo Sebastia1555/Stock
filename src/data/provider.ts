@@ -13,7 +13,9 @@ import {
   mockConstituents,
   mockFundamentals,
   mockPriceHistory,
+  mockPriceOn,
   mockQuote,
+  mockSpyPriceOn,
 } from './mockData.ts'
 
 // Fecha "de mercado" activa. La app puede fijarla (p. ej. para demostrar un día sin compras).
@@ -62,4 +64,14 @@ export function getPriceHistory(ticker: string, range: PriceRange): Promise<Pric
 
 export function getBenchmark(range: PriceRange): Promise<PricePoint[]> {
   return resolve(mockBenchmark(marketDate, rangeToDays(range)))
+}
+
+/** Precio de cierre de un ticker en una fecha pasada (valoración histórica de la cartera). */
+export function getPriceOn(ticker: string, date: string): Promise<number> {
+  return resolve(mockPriceOn(ticker, date))
+}
+
+/** Precio del índice de referencia (SPY) en una fecha. */
+export function getBenchmarkPriceOn(date: string): Promise<number> {
+  return resolve(mockSpyPriceOn(date))
 }

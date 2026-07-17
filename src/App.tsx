@@ -5,6 +5,7 @@ import { setAppDate, useAppDate } from './lib/dateStore.ts'
 import { Home } from './pages/Home.tsx'
 import { Portfolio } from './pages/Portfolio.tsx'
 import { RegisterTransaction } from './pages/RegisterTransaction.tsx'
+import { TrackRecordPage } from './pages/TrackRecord.tsx'
 
 function Shell() {
   const date = useAppDate()
@@ -16,6 +17,7 @@ function Shell() {
           <Route path="/" element={<Home />} />
           <Route path="/cartera" element={<Portfolio />} />
           <Route path="/registrar" element={<RegisterTransaction />} />
+          <Route path="/evolucion" element={<TrackRecordPage />} />
           <Route path="*" element={<Home />} />
         </Routes>
         <LegalNotice />

@@ -7,7 +7,7 @@ import type {
   PricePoint,
   Quote,
 } from '../types.ts'
-import { seededRng } from '../engine/prng.ts'
+import { hashString, seededRng } from '../engine/prng.ts'
 import { conservativeGrowth, dcfIntrinsicValue } from '../engine/valuation.ts'
 
 export type ProfileTier = 'high' | 'mid' | 'low' | 'trap'
@@ -50,14 +50,14 @@ const PROFILES: Profile[] = [
   { ticker: 'UNH', name: 'UnitedHealth', sector: 'Salud', tier: 'high', eps: 25, epsCagr: 0.13, roic: 20, roe: 25, opMargin: 8, fcfConv: 0.95, debtToEbitda: 1.5, currentRatio: 0.8, shares: 920, mosTarget: -0.10, drawdownTarget: -0.12 },
 
   // --- Calidad barata → candidatos elegibles ---
-  { ticker: 'BMY', name: 'Bristol Myers Squibb', sector: 'Salud', tier: 'mid', eps: 7.5, epsCagr: 0.04, roic: 18, roe: 22, opMargin: 25, fcfConv: 1.1, debtToEbitda: 2.2, currentRatio: 1.3, shares: 2030, mosTarget: 0.35, drawdownTarget: -0.30 },
-  { ticker: 'PFE', name: 'Pfizer', sector: 'Salud', tier: 'mid', eps: 3.2, epsCagr: 0.03, roic: 14, roe: 18, opMargin: 22, fcfConv: 0.9, debtToEbitda: 2.6, currentRatio: 1.2, shares: 5700, mosTarget: 0.32, drawdownTarget: -0.28 },
-  { ticker: 'CMCSA', name: 'Comcast', sector: 'Comunicaciones', tier: 'mid', eps: 4.2, epsCagr: 0.06, roic: 13, roe: 18, opMargin: 19, fcfConv: 1.0, debtToEbitda: 2.6, currentRatio: 0.9, shares: 3900, mosTarget: 0.31, drawdownTarget: -0.26 },
-  { ticker: 'TGT', name: 'Target', sector: 'Consumo discrecional', tier: 'mid', eps: 9.5, epsCagr: 0.05, roic: 16, roe: 30, opMargin: 6, fcfConv: 0.8, debtToEbitda: 1.8, currentRatio: 0.9, shares: 460, mosTarget: 0.34, drawdownTarget: -0.31 },
-  { ticker: 'GILD', name: 'Gilead Sciences', sector: 'Salud', tier: 'mid', eps: 6.8, epsCagr: 0.02, roic: 20, roe: 25, opMargin: 40, fcfConv: 1.1, debtToEbitda: 1.5, currentRatio: 1.4, shares: 1250, mosTarget: 0.33, drawdownTarget: -0.24 },
-  { ticker: 'CSCO', name: 'Cisco', sector: 'Tecnología', tier: 'high', eps: 3.3, epsCagr: 0.05, roic: 22, roe: 28, opMargin: 27, fcfConv: 1.05, debtToEbitda: 1.2, currentRatio: 1.4, shares: 4050, mosTarget: 0.29, drawdownTarget: -0.22 },
-  { ticker: 'VZ', name: 'Verizon', sector: 'Comunicaciones', tier: 'mid', eps: 4.5, epsCagr: 0.01, roic: 12, roe: 20, opMargin: 22, fcfConv: 0.8, debtToEbitda: 2.9, currentRatio: 0.8, shares: 4200, mosTarget: 0.32, drawdownTarget: -0.25 },
-  { ticker: 'MMM', name: '3M', sector: 'Industrial', tier: 'mid', eps: 9, epsCagr: 0.02, roic: 18, roe: 40, opMargin: 20, fcfConv: 1.0, debtToEbitda: 2.2, currentRatio: 1.1, shares: 550, mosTarget: 0.3, drawdownTarget: -0.29 },
+  { ticker: 'BMY', name: 'Bristol Myers Squibb', sector: 'Salud', tier: 'mid', eps: 7.5, epsCagr: 0.04, roic: 18, roe: 22, opMargin: 25, fcfConv: 1.1, debtToEbitda: 2.2, currentRatio: 1.3, shares: 2030, mosTarget: 0.34, drawdownTarget: -0.30 },
+  { ticker: 'PFE', name: 'Pfizer', sector: 'Salud', tier: 'mid', eps: 3.2, epsCagr: 0.03, roic: 14, roe: 18, opMargin: 22, fcfConv: 0.9, debtToEbitda: 2.6, currentRatio: 1.2, shares: 5700, mosTarget: 0.31, drawdownTarget: -0.28 },
+  { ticker: 'CMCSA', name: 'Comcast', sector: 'Comunicaciones', tier: 'mid', eps: 4.2, epsCagr: 0.06, roic: 13, roe: 18, opMargin: 19, fcfConv: 1.0, debtToEbitda: 2.6, currentRatio: 0.9, shares: 3900, mosTarget: 0.3, drawdownTarget: -0.26 },
+  { ticker: 'TGT', name: 'Target', sector: 'Consumo discrecional', tier: 'mid', eps: 9.5, epsCagr: 0.05, roic: 16, roe: 30, opMargin: 6, fcfConv: 0.8, debtToEbitda: 1.8, currentRatio: 0.9, shares: 460, mosTarget: 0.33, drawdownTarget: -0.31 },
+  { ticker: 'GILD', name: 'Gilead Sciences', sector: 'Salud', tier: 'mid', eps: 6.8, epsCagr: 0.02, roic: 20, roe: 25, opMargin: 40, fcfConv: 1.1, debtToEbitda: 1.5, currentRatio: 1.4, shares: 1250, mosTarget: 0.32, drawdownTarget: -0.24 },
+  { ticker: 'CSCO', name: 'Cisco', sector: 'Tecnología', tier: 'high', eps: 3.3, epsCagr: 0.05, roic: 22, roe: 28, opMargin: 27, fcfConv: 1.05, debtToEbitda: 1.2, currentRatio: 1.4, shares: 4050, mosTarget: 0.28, drawdownTarget: -0.22 },
+  { ticker: 'VZ', name: 'Verizon', sector: 'Comunicaciones', tier: 'mid', eps: 4.5, epsCagr: 0.01, roic: 12, roe: 20, opMargin: 22, fcfConv: 0.8, debtToEbitda: 2.9, currentRatio: 0.8, shares: 4200, mosTarget: 0.31, drawdownTarget: -0.25 },
+  { ticker: 'MMM', name: '3M', sector: 'Industrial', tier: 'mid', eps: 9, epsCagr: 0.02, roic: 18, roe: 40, opMargin: 20, fcfConv: 1.0, debtToEbitda: 2.2, currentRatio: 1.1, shares: 550, mosTarget: 0.29, drawdownTarget: -0.29 },
 
   // --- Baja calidad → fallan filtros duros ---
   { ticker: 'F', name: 'Ford', sector: 'Automóvil', tier: 'low', eps: 1.6, epsCagr: 0.01, roic: 4, roe: 8, opMargin: 3, fcfConv: 0.5, debtToEbitda: 6, currentRatio: 1.2, shares: 4000, mosTarget: 0.20, drawdownTarget: -0.30 },
@@ -164,17 +164,51 @@ function basePrice(ticker: string): number {
 }
 
 // --- Deriva de mercado determinista por fecha ---
+// Ciclos senoidales suaves sobre el nº de día + un ruido diario pequeño: el mercado
+// "vive" (hay días caros y baratos) sin saltos absurdos entre días consecutivos,
+// lo que da curvas de patrimonio realistas en el track record.
 
-/** factor = 1 + ruido_mercado(±20%, semilla=fecha) + ruido_idiosincrático(±5%, semilla=fecha+ticker). */
+function dayNumber(date: string): number {
+  return Math.floor(Date.parse(date + 'T00:00:00Z') / 86_400_000)
+}
+
+const PHASE_1 = seededRng('mkt:phase1')() * Math.PI * 2
+const PHASE_2 = seededRng('mkt:phase2')() * Math.PI * 2
+
+/** Componente de mercado común a todo el universo para una fecha (aprox. ±20%). */
+function marketComponent(date: string): number {
+  const d = dayNumber(date)
+  return (
+    0.13 * Math.sin((2 * Math.PI * d) / 97 + PHASE_1) +
+    0.06 * Math.sin((2 * Math.PI * d) / 23 + PHASE_2) +
+    (seededRng(`mkt:${date}`)() - 0.5) * 0.04
+  )
+}
+
+/** factor = 1 + mercado(±20%, ciclos por fecha) + idiosincrático(±5%, ciclo propio del ticker). */
 export function applyDailyDrift(base: number, ticker: string, date: string): number {
-  const market = (seededRng(`mkt:${date}`)() - 0.5) * 2 * 0.2
-  const idio = (seededRng(`idio:${date}:${ticker}`)() - 0.5) * 2 * 0.05
-  const factor = Math.max(0.5, 1 + market + idio)
-  return round2(base * factor)
+  const d = dayNumber(date)
+  const phase = (hashString(ticker) % 628) / 100
+  const idio =
+    0.04 * Math.sin((2 * Math.PI * d) / 41 + phase) +
+    (seededRng(`idio:${date}:${ticker}`)() - 0.5) * 0.02
+  return round2(base * Math.max(0.5, 1 + marketComponent(date) + idio))
 }
 
 function currentPrice(ticker: string, date: string): number {
   return applyDailyDrift(basePrice(ticker), ticker, date)
+}
+
+/** Precio de cierre de un ticker en una fecha concreta (para valorar carteras históricas). */
+export function mockPriceOn(ticker: string, date: string): number {
+  return currentPrice(ticker, date)
+}
+
+const SPY_BASE = 500
+
+/** Precio del índice de referencia (SPY) en una fecha: sigue el mismo componente de mercado. */
+export function mockSpyPriceOn(date: string): number {
+  return round2(SPY_BASE * Math.max(0.5, 1 + marketComponent(date)))
 }
 
 // --- Historial de precios coherente con la cotización ---
@@ -238,17 +272,15 @@ export function mockPriceHistory(ticker: string, date: string, days: number): Pr
   return buildPriceHistory(ticker, date, days)
 }
 
-/** Serie del índice de referencia (SPY) para el track record (fases posteriores). */
+/** Serie del índice de referencia (SPY) terminando en `date`, coherente entre fechas. */
 export function mockBenchmark(date: string, days: number): PricePoint[] {
-  const rng = seededRng(`spy:${date}`)
   const end = new Date(date + 'T00:00:00Z')
   const points: PricePoint[] = []
-  let level = 400
   for (let i = 0; i < days; i++) {
-    level *= 1 + (rng() - 0.48) * 0.012
     const d = new Date(end)
     d.setUTCDate(d.getUTCDate() - (days - 1 - i))
-    points.push({ date: d.toISOString().slice(0, 10), close: round2(level) })
+    const iso = d.toISOString().slice(0, 10)
+    points.push({ date: iso, close: mockSpyPriceOn(iso) })
   }
   return points
 }

@@ -29,10 +29,20 @@ function IconPortfolio({ active }: { active: boolean }) {
   )
 }
 
+function IconTrack({ active }: { active: boolean }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3.5 20.5h17" />
+      <path d="M4 16l4.5-5 3.5 3 4-6.5 4 3" />
+    </svg>
+  )
+}
+
 const TABS = [
   { to: '/', label: 'Hoy', Icon: IconToday },
   { to: '/registrar', label: 'Registrar', Icon: IconRegister },
   { to: '/cartera', label: 'Cartera', Icon: IconPortfolio },
+  { to: '/evolucion', label: 'Evolución', Icon: IconTrack },
 ] as const
 
 export function TabBar() {
@@ -43,7 +53,7 @@ export function TabBar() {
       className="fixed inset-x-0 bottom-0 z-20 border-t border-[var(--color-hairline)] bg-[var(--color-canvas)]/90 backdrop-blur-md"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
-      <div className="mx-auto grid max-w-3xl grid-cols-3">
+      <div className="mx-auto grid max-w-3xl grid-cols-4">
         {TABS.map(({ to, label, Icon }) => {
           const active = to === '/' ? pathname === '/' : pathname.startsWith(to)
           return (
