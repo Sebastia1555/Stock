@@ -1,6 +1,8 @@
 // Interfaz de datos: la UI y el motor CONSUMEN estas funciones.
 // En Fase 1 se respaldan con datos mock deterministas. En fases posteriores
 // cada función se cableará a una API real (p. ej. Finnhub) sin tocar UI ni motor.
+// Todas aceptan una fecha opcional (por defecto, la fecha de mercado activa),
+// lo que permite reconstruir recomendaciones pasadas sin tocar estado global.
 import type {
   Constituent,
   Fundamentals,
@@ -50,20 +52,24 @@ export function getSP500Constituents(): Promise<Constituent[]> {
   return resolve(mockConstituents())
 }
 
-export function getFundamentals(ticker: string): Promise<Fundamentals> {
-  return resolve(mockFundamentals(ticker, marketDate))
+export function getFundamentals(ticker: string, date: string = marketDate): Promise<Fundamentals> {
+  return resolve(mockFundamentals(ticker, date))
 }
 
-export function getQuote(ticker: string): Promise<Quote> {
-  return resolve(mockQuote(ticker, marketDate))
+export function getQuote(ticker: string, date: string = marketDate): Promise<Quote> {
+  return resolve(mockQuote(ticker, date))
 }
 
-export function getPriceHistory(ticker: string, range: PriceRange): Promise<PricePoint[]> {
-  return resolve(mockPriceHistory(ticker, marketDate, rangeToDays(range)))
+export function getPriceHistory(
+  ticker: string,
+  range: PriceRange,
+  date: string = marketDate,
+): Promise<PricePoint[]> {
+  return resolve(mockPriceHistory(ticker, date, rangeToDays(range)))
 }
 
-export function getBenchmark(range: PriceRange): Promise<PricePoint[]> {
-  return resolve(mockBenchmark(marketDate, rangeToDays(range)))
+export function getBenchmark(range: PriceRange, date: string = marketDate): Promise<PricePoint[]> {
+  return resolve(mockBenchmark(date, rangeToDays(range)))
 }
 
 /** Precio de cierre de un ticker en una fecha pasada (valoración histórica de la cartera). */

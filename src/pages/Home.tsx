@@ -1,6 +1,6 @@
 // Home / Recomendación del día.
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import type { MarketVerdict, PricePoint } from '../types.ts'
 import { getPriceHistory } from '../data/provider.ts'
 import { useAppDate } from '../lib/dateStore.ts'
@@ -18,6 +18,12 @@ function MarketVerdictBar({ verdict }: { verdict: MarketVerdict }) {
         <Stat label="Pasan calidad" value={verdict.passQuality} />
         <Stat label="Elegibles hoy" value={verdict.eligible} tone={verdict.eligible > 0 ? 'gain' : 'warn'} />
       </div>
+      <Link
+        to="/historial"
+        className="mt-4 block border-t border-[var(--color-hairline)] pt-3 text-[13px] font-semibold text-[var(--color-accent)]"
+      >
+        ¿Acierta el motor? Ver historial de picks e hit rate →
+      </Link>
     </Card>
   )
 }
@@ -95,7 +101,15 @@ export function Home() {
             </Section>
           )}
 
-          <Section title="Watchlist" subtitle="Negocios excelentes que aún no están baratos: la lista de la compra.">
+          <Section
+            title="Watchlist"
+            subtitle="Negocios excelentes que aún no están baratos: la lista de la compra."
+            action={
+              <Link to="/watchlist" className="shrink-0 text-[13px] font-semibold text-[var(--color-accent)]">
+                Ver todas →
+              </Link>
+            }
+          >
             {verdict.watchlist.length > 0 ? (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {verdict.watchlist.slice(0, 6).map((r) => (

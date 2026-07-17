@@ -36,12 +36,25 @@ export function LegalNotice() {
   )
 }
 
-export function Section({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
+export function Section({
+  title,
+  subtitle,
+  action,
+  children,
+}: {
+  title: string
+  subtitle?: string
+  action?: ReactNode
+  children: ReactNode
+}) {
   return (
     <section className="mt-8">
-      <div className="mb-3">
-        <h3 className="text-[20px] font-semibold">{title}</h3>
-        {subtitle && <p className="text-[13px] text-[var(--color-ink-soft)]">{subtitle}</p>}
+      <div className="mb-3 flex items-baseline justify-between gap-3">
+        <div>
+          <h3 className="text-[20px] font-semibold">{title}</h3>
+          {subtitle && <p className="text-[13px] text-[var(--color-ink-soft)]">{subtitle}</p>}
+        </div>
+        {action}
       </div>
       {children}
     </section>

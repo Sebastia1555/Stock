@@ -49,7 +49,9 @@ function PositionRow({ p }: { p: PositionView }) {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[17px] font-semibold">{p.ticker}</span>
+            <Link to={`/valor/${p.ticker}`} className="text-[17px] font-semibold text-[var(--color-accent)]">
+              {p.ticker}
+            </Link>
             {p.thesisAtRisk && <Pill tone="loss">⚠ Tesis en riesgo</Pill>}
           </div>
           <p className="text-[13px] text-[var(--color-ink-soft)]">{p.name}</p>

@@ -9,12 +9,12 @@ import {
 import { movingAverage, rsi } from './indicators.ts'
 import { buildVerdict, scoreStock } from '../engine/scoring.ts'
 
-/** Analiza un único ticker con la fecha activa del provider (usado por Home y Cartera). */
+/** Analiza un único ticker en una fecha dada (usado por Home, Cartera, Detalle e Historial). */
 export async function analyzeTicker(ticker: string, date: string): Promise<Recommendation> {
   const [fundamentals, quote, history] = await Promise.all([
-    getFundamentals(ticker),
-    getQuote(ticker),
-    getPriceHistory(ticker, '1y'),
+    getFundamentals(ticker, date),
+    getQuote(ticker, date),
+    getPriceHistory(ticker, '1y', date),
   ])
   return scoreStock(
     { fundamentals, quote, ma200: movingAverage(history, 200), rsi: rsi(history, 14) },

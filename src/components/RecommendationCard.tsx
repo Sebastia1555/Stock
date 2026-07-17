@@ -1,4 +1,5 @@
 // Tarjeta de recomendación: variante 'hero' (pick principal) y 'compact' (alternativas/watchlist).
+import { Link } from 'react-router-dom'
 import type { PricePoint, Recommendation } from '../types.ts'
 import { money, pct, signedPct } from '../lib/format.ts'
 import { Card, ConvictionBadge, Pill, ScoreBar, Stat } from './ui.tsx'
@@ -57,12 +58,20 @@ export function HeroRecommendation({ rec, history, onRegister }: { rec: Recommen
           <Stat label="Nº de Graham" value={money(rec.valuation.grahamNumber)} />
         </div>
 
-        <button
-          onClick={onRegister}
-          className="mt-6 w-full rounded-full bg-[var(--color-accent)] px-6 py-3 text-[15px] font-semibold text-white transition-colors hover:bg-[var(--color-accent-600)] sm:w-auto"
-        >
-          Registrar compra
-        </button>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <button
+            onClick={onRegister}
+            className="w-full rounded-full bg-[var(--color-accent)] px-6 py-3 text-[15px] font-semibold text-white transition-colors hover:bg-[var(--color-accent-600)] sm:w-auto"
+          >
+            Registrar compra
+          </button>
+          <Link
+            to={`/valor/${rec.ticker}`}
+            className="w-full rounded-full border border-[var(--color-hairline)] bg-[var(--color-parchment)] px-6 py-3 text-center text-[15px] font-semibold text-[var(--color-ink)] sm:w-auto"
+          >
+            Ver análisis completo
+          </Link>
+        </div>
       </div>
     </Card>
   )
@@ -70,27 +79,29 @@ export function HeroRecommendation({ rec, history, onRegister }: { rec: Recommen
 
 export function CompactRecommendation({ rec, showMos = true }: { rec: Recommendation; showMos?: boolean }) {
   return (
-    <Card className="p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[17px] font-semibold">{rec.ticker}</span>
-            {showMos ? <ConvictionBadge conviction={rec.conviction} /> : <Pill tone="accent">Watchlist</Pill>}
-          </div>
-          <p className="text-[13px] text-[var(--color-ink-soft)]">{rec.name}</p>
-        </div>
-        <div className="text-right">
-          <div className="num font-semibold">{money(rec.price)}</div>
-          {showMos ? (
-            <div className={`num text-[13px] ${rec.marginOfSafety >= 0.25 ? 'text-[var(--color-gain)]' : 'text-[var(--color-loss)]'}`}>
-              MoS {pct(rec.marginOfSafety)}
+    <Link to={`/valor/${rec.ticker}`} className="block">
+      <Card className="h-full p-4 transition-colors hover:border-[var(--color-accent)]">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[17px] font-semibold">{rec.ticker}</span>
+              {showMos ? <ConvictionBadge conviction={rec.conviction} /> : <Pill tone="accent">Watchlist</Pill>}
             </div>
-          ) : (
-            <div className="num text-[13px] text-[var(--color-ink-soft)]">Calidad {rec.quality.score}</div>
-          )}
+            <p className="text-[13px] text-[var(--color-ink-soft)]">{rec.name}</p>
+          </div>
+          <div className="text-right">
+            <div className="num font-semibold">{money(rec.price)}</div>
+            {showMos ? (
+              <div className={`num text-[13px] ${rec.marginOfSafety >= 0.25 ? 'text-[var(--color-gain)]' : 'text-[var(--color-loss)]'}`}>
+                MoS {pct(rec.marginOfSafety)}
+              </div>
+            ) : (
+              <div className="num text-[13px] text-[var(--color-ink-soft)]">Calidad {rec.quality.score}</div>
+            )}
+          </div>
         </div>
-      </div>
-      <p className="mt-2 line-clamp-2 text-[13px] leading-snug text-[var(--color-ink-soft)]">{rec.thesis}</p>
-    </Card>
+        <p className="mt-2 line-clamp-2 text-[13px] leading-snug text-[var(--color-ink-soft)]">{rec.thesis}</p>
+      </Card>
+    </Link>
   )
 }
