@@ -18,7 +18,7 @@ function EmptyState() {
   return (
     <Card hero className="mt-6 p-7">
       <h2 className="text-[22px] font-semibold">Tu cartera empieza aquí</h2>
-      <p className="mt-1 text-[15px] text-[var(--color-ink-soft)]">Así funciona Buffett Daily, en tres pasos:</p>
+      <p className="mt-1 text-[15px] text-[var(--color-ink-soft)]">Así funciona Stock&Sebas, en tres pasos:</p>
       <ol className="mt-5 space-y-4">
         {steps.map((s) => (
           <li key={s.n} className="flex gap-3.5">

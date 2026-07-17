@@ -1,6 +1,6 @@
 {
-  "name": "Buffett Daily",
-  "short_name": "Buffett",
+  "name": "Stock&Sebas",
+  "short_name": "Stock&Sebas",
   "description": "Recomendador value diario del S&P 500 con filosofía Buffett/Graham.",
   "start_url": "./",
   "scope": "./",

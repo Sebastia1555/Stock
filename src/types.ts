@@ -1,4 +1,4 @@
-// Modelo de datos central de Buffett Daily.
+// Modelo de datos central de Stock&Sebas.
 // Sin enums (erasableSyntaxOnly): usamos uniones y objetos `as const`.
 
 export type Conviction = 'alta' | 'media' | 'baja'

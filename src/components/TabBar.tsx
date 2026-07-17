@@ -29,6 +29,15 @@ function IconPortfolio({ active }: { active: boolean }) {
   )
 }
 
+function IconSearch({ active }: { active: boolean }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="10.5" cy="10.5" r="6.75" />
+      <path d="M15.5 15.5L20.5 20.5" />
+    </svg>
+  )
+}
+
 function IconTrack({ active }: { active: boolean }) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -40,6 +49,7 @@ function IconTrack({ active }: { active: boolean }) {
 
 const TABS = [
   { to: '/', label: 'Hoy', Icon: IconToday },
+  { to: '/analizar', label: 'Analizar', Icon: IconSearch },
   { to: '/registrar', label: 'Registrar', Icon: IconRegister },
   { to: '/cartera', label: 'Cartera', Icon: IconPortfolio },
   { to: '/evolucion', label: 'Evolución', Icon: IconTrack },
@@ -53,7 +63,7 @@ export function TabBar() {
       className="fixed inset-x-0 bottom-0 z-20 border-t border-[var(--color-hairline)] bg-[var(--color-canvas)]/90 backdrop-blur-md"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
-      <div className="mx-auto grid max-w-3xl grid-cols-4">
+      <div className="mx-auto grid max-w-3xl grid-cols-5">
         {TABS.map(({ to, label, Icon }) => {
           const active = to === '/' ? pathname === '/' : pathname.startsWith(to)
           return (

@@ -1,4 +1,4 @@
-# Buffett Daily 📈
+# Stock&Sebas 📈
 
 **Recomendador value diario del S&P 500.** Cada día, la app dice qué acción comprar siguiendo la
 filosofía Buffett/Graham — negocios excelentes a precio razonable con margen de seguridad — para

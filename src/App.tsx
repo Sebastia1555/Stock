@@ -9,6 +9,7 @@ import { TrackRecordPage } from './pages/TrackRecord.tsx'
 import { StockDetail } from './pages/StockDetail.tsx'
 import { Watchlist } from './pages/Watchlist.tsx'
 import { History } from './pages/History.tsx'
+import { Analyze } from './pages/Analyze.tsx'
 
 function Shell() {
   const date = useAppDate()
@@ -21,6 +22,7 @@ function Shell() {
           <Route path="/cartera" element={<Portfolio />} />
           <Route path="/registrar" element={<RegisterTransaction />} />
           <Route path="/evolucion" element={<TrackRecordPage />} />
+          <Route path="/analizar" element={<Analyze />} />
           <Route path="/valor/:ticker" element={<StockDetail />} />
           <Route path="/watchlist" element={<Watchlist />} />
           <Route path="/historial" element={<History />} />

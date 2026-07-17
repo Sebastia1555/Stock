@@ -1,7 +1,7 @@
-// Service worker de Buffett Daily.
+// Service worker de Stock&Sebas.
 // Navegaciones: network-first con vuelta al app-shell cacheado.
 // Recursos same-origin: stale-while-revalidate.
-const CACHE = 'buffett-daily-v2'
+const CACHE = 'stock-sebas-v3'
 const APP_SHELL = ['./', './index.html', './manifest.webmanifest']
 
 self.addEventListener('install', (event) => {
